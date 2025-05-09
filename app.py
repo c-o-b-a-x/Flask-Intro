@@ -40,5 +40,22 @@ def form():
                 ssn=request.form.get('ssn')
                 return render_template ("greeting.html",name=name,ssn=ssn)
         return render_template("form.html")
+
+
+
+@app.route ("/math",methods=['GET','POST'])
+def math():
+        if request.method== 'POST':
+                num1=request.form.get('num1')
+                num2=request.form.get('num2')
+        return render_template ("math.html")
+
+@app.route ("/math-results",methods=['GET','POST'])
+def  solve():
+        num1=request.form.get('num1')
+        num2=request.form.get('num2')
+        operation=request.form.get('operation')
+        answer = eval(f"{int(num1)}{operation}{int(num2)}")
+        return render_template ("math_results.html",answer=answer,num1=num1,num2=num2,operation=operation)
 if __name__ == "__main__":
         app.run(debug=True)
