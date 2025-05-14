@@ -56,7 +56,7 @@ def  solve():
         answer = eval(f"{int(num1)}{operation}{int(num2)}")
         return render_template ("math_results.html",answer=answer,num1=num1,num2=num2,operation=operation)
 
-@app.route ("/cat-fact")
+@app.route ("/catfact")
 def catfact():
         response=requests.get("https://catfact.ninja/fact")
         if response.status_code== 200:
@@ -66,14 +66,27 @@ def catfact():
                 fact = "Sorry I couldnt get a cat fact right now please try again later "
 
         picsrep= requests.get("https://cataas.com/cat?json=true")
-        if response.status_code== 200:
+        if picsrep.status_code== 200:
                 picdata = picsrep.json()
                 img=picdata["url"]
         else:
                 img = "/image/404.png"
         return render_template("cat.html",cat_fact=fact,cat_img= img)
 
-
+@app.route("/dogs", methods=["GET","POST"])
+def dog():
+        image_url=None 
+        error=None
+        breed=""
+        if request.method=="POST":
+                breed=request.form.get("breed").lower()
+                api_url=f"https://dog.ceo/api/breed/{breed}/images/random"
+                response=requests.get(api_url)
+                if response.status_code==200 and response.json().get("status") == "success":
+                        image_url = response.json()["message"]
+                else:
+                        error= f"Couldnt find breed '{breed}'. Try Another "
+        return render_template("dog.html",image_url=image_url,error=error,breed=breed)
 
 if __name__ == "__main__":
         app.run(debug=True)
